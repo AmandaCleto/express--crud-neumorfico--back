@@ -1,0 +1,28 @@
+{
+  "name": "crud-nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "node ./src/server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AmandaCleto/NodeJs---Simple-Crud.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AmandaCleto/NodeJs---Simple-Crud/issues"
+  },
+  "homepage": "https://github.com/AmandaCleto/NodeJs---Simple-Crud#readme",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "module-alias": "^2.2.2"
+  },
+  "_moduleAliases": {
+    "@": "src"
+  }
+}
