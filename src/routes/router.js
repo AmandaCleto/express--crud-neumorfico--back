@@ -9,7 +9,7 @@ const animes = [
 
 router.get('/teste', (req, res, next) => {
     res.status(200).send({
-        mensagem: "🚀"
+        mensagem: "funcionou 🚀"
     });
 })
 
