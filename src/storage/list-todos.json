@@ -1,4 +1,28 @@
 {
-    "id":1,
-    "name":"Naruto Shippuden"
+  "todos": [
+    {
+      "id": 1,
+      "item": "lavar roupa"
+    },
+    {
+      "id": 2,
+      "item": "comprar doce"
+    },
+    {
+      "id": 3,
+      "item": "ouvir musica"
+    },
+    {
+      "id": 4,
+      "item": "ver the office"
+    },
+    {
+      "id": 5,
+      "item": "manjar node"
+    },
+    {
+      "id": 5,
+      "item": "manjar node"
+    }
+  ]
 }

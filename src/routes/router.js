@@ -6,56 +6,56 @@ const router = Router();
 const path_list_todos_file = path.resolve(__dirname, '..', 'storage', 'list-todos.json');
 const file_todos = require(path_list_todos_file);
 
-const animes = [
-    'Haikyuu',
-    'Shingeki no Kyojin',
-    'Hunter X Hunter'
-]
-
 router.get('/teste', (req, res, next) => {
     res.status(200).send({
         mensagem: "funcionou 🚀"
     });
 })
 
-//read all files
+//read entire file
 router.get('/todos', (req, res) => {
-    // fs.readFile(path_list_todos_file, 'utf-8', (error, jsonString) => {
-    //     if (error) {
-    //         console.error(error);
-    //     }
-    //     return res.json(JSON.parse(jsonString));
-    // })
     return res.json(file_todos)
 })
 
 //read specific item
 router.get('/todos/:index', (req, res) => {
     const { index } = req.params;
-    return res.json(file_todos[index]);
+    return res.json(file_todos["todos"][index]);
 })
 
 //create a new item
 router.post('/todos', (req, res) => {
-    const { name } = req.body;
-    animes.push(name);
-    return res.json(animes);
+    const todo = req.body;
+
+    file_todos['todos'].push(todo);
+
+    fs.writeFile(path_list_todos_file, JSON.stringify(file_todos, null, 2), 'utf-8', function(err) {
+        if (err) throw err;
+        return res.json(file_todos);
+    })
 })
 
 //update a specific item
 router.put('/todos/:index', (req, res) => {
     const { index } = req.params;
-    const { name } = req.body;
+    const { item } = req.body;
+    file_todos["todos"][index].item = item;
 
-    animes[index] = name;
-    return res.json(animes);
+    return res.json(file_todos);
 })
 
 //delete a specific item
 router.delete('/todos/:index', (req, res) => {
     const { index } = req.params;
-    animes.splice(index, 1);
-    return res.json(animes);
+    let target = file_todos["todos"].findIndex((todo) => {
+        if(todo.id == index){
+            return true;
+        }
+    })
+
+    file_todos["todos"].splice(target, 1);
+
+    return res.json(file_todos);
 })
 
 module.exports = router;
