@@ -20,14 +20,14 @@ router.get('/todos', (req, res) => {
 //read specific item
 router.get('/todos/:index', (req, res) => {
     const { index } = req.params;
-    return res.json(file_todos["todos"][index]);
+    return res.json(file_todos.todos[index]);
 })
 
 //create a new item
 router.post('/todos', (req, res) => {
     const todo = req.body;
 
-    file_todos['todos'].push(todo);
+    file_todos.todos.push(todo);
 
     fs.writeFile(path_list_todos_file, JSON.stringify(file_todos, null, 2), 'utf-8', function(err) {
         if (err) throw err;
@@ -39,7 +39,7 @@ router.post('/todos', (req, res) => {
 router.put('/todos/:index', (req, res) => {
     const { index } = req.params;
     const { item } = req.body;
-    file_todos["todos"][index].item = item;
+    file_todos.todos[index].item = item;
 
     return res.json(file_todos);
 })
@@ -47,13 +47,13 @@ router.put('/todos/:index', (req, res) => {
 //delete a specific item
 router.delete('/todos/:index', (req, res) => {
     const { index } = req.params;
-    let target = file_todos["todos"].findIndex((todo) => {
+    let target = file_todos.todos.findIndex((todo) => {
         if(todo.id == index){
             return true;
         }
     })
 
-    file_todos["todos"].splice(target, 1);
+    file_todos.todos.splice(target, 1);
 
     return res.json(file_todos);
 })
