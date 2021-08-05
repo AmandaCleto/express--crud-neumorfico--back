@@ -1,6 +1,8 @@
 const { Router } = require('express');
 const fs = require('fs');
 const path = require('path');
+const { findTarget } = require('../utils/index');
+
 const router = Router();
 
 const path_list_todos_file = path.resolve(__dirname, '..', 'storage', 'list-todos.json');
@@ -39,7 +41,11 @@ router.post('/todos', (req, res) => {
 router.put('/todos/:index', (req, res) => {
     const { index } = req.params;
     const { item } = req.body;
-    file_todos.todos[index].item = item;
+
+    let target = findTarget(file_todos.todos, index);
+    if (target != -1) {
+        file_todos.todos[target].item = item;
+    }
 
     return res.json(file_todos);
 })
@@ -47,13 +53,11 @@ router.put('/todos/:index', (req, res) => {
 //delete a specific item
 router.delete('/todos/:index', (req, res) => {
     const { index } = req.params;
-    let target = file_todos.todos.findIndex((todo) => {
-        if(todo.id == index){
-            return true;
-        }
-    })
 
-    file_todos.todos.splice(target, 1);
+    let target = findTarget(file_todos.todos, index);
+    if (target != -1) {
+        file_todos.todos.splice(target, 1);
+    }
 
     return res.json(file_todos);
 })
