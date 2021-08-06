@@ -1,4 +1,4 @@
-function findTarget(json, id) {
+function findId(json, id) {
     let target = json.findIndex((todo) => {
         if(todo.id == id){
             return true;
@@ -8,4 +8,4 @@ function findTarget(json, id) {
     return target;
 }
 
-module.exports = { findTarget };
+module.exports = { findId };
