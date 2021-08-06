@@ -1,7 +1,8 @@
 const { Router } = require('express');
 const fs = require('fs');
 const path = require('path');
-const { findTarget } = require('../utils/index');
+const { findId } = require('../utils/index');
+const { ThrowErrorCustom } = require('../utils/errors');
 
 const router = Router();
 
@@ -15,18 +16,39 @@ router.get('/teste', (req, res, next) => {
 })
 
 //read entire file
-router.get('/todos', (req, res) => {
+router.get('/todo/all', (req, res) => {
     return res.json(file_todos)
 })
 
 //read specific item
-router.get('/todos/:index', (req, res) => {
-    const { index } = req.params;
-    return res.json(file_todos.todos[index]);
+router.get('/todo/:id?', (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            throw new ThrowErrorCustom({
+                message: "You must pass an id",
+                status: 404,
+            });
+        }
+
+        let target = findId(file_todos.todos, id);
+        if (target == -1) {
+            throw new ThrowErrorCustom({
+                message: "Id not found",
+                status: 404,
+            });
+        }
+
+        return res.json(file_todos.todos[id]);
+    } catch(error) {
+        console.log(error)
+        return res.status(error.status).send({ message: error.message });
+    }
 })
 
 //create a new item
-router.post('/todos', (req, res) => {
+router.post('/todo', (req, res) => {
     const todo = req.body;
 
     file_todos.todos.push(todo);
@@ -38,11 +60,11 @@ router.post('/todos', (req, res) => {
 })
 
 //update a specific item
-router.put('/todos/:index', (req, res) => {
+router.put('/todo/:index', (req, res) => {
     const { index } = req.params;
     const { item } = req.body;
 
-    let target = findTarget(file_todos.todos, index);
+    let target = findId(file_todos.todos, index);
     if (target != -1) {
         file_todos.todos[target].item = item;
     }
@@ -51,10 +73,10 @@ router.put('/todos/:index', (req, res) => {
 })
 
 //delete a specific item
-router.delete('/todos/:index', (req, res) => {
+router.delete('/todo/:index', (req, res) => {
     const { index } = req.params;
 
-    let target = findTarget(file_todos.todos, index);
+    let target = findId(file_todos.todos, index);
     if (target != -1) {
         file_todos.todos.splice(target, 1);
     }
