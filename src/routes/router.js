@@ -17,7 +17,12 @@ router.get('/teste', (req, res, next) => {
 
 //read entire file
 router.get('/todo/all', (req, res) => {
-    return res.json(file_todos)
+    try {
+        return res.json(file_todos)
+    } catch (error) {
+        console.log(error)
+        return res.status(error.status).send({ message: error.message });
+    }
 })
 
 //read specific item
@@ -49,39 +54,85 @@ router.get('/todo/:id?', (req, res) => {
 
 //create a new item
 router.post('/todo', (req, res) => {
-    const todo = req.body;
+    try {
+        const todo = req.body;
+        if (!todo.item) {
+            throw new ThrowErrorCustom({
+                message: "You must pass the item description",
+                status: 400,
+            });
+        }
 
-    file_todos.todos.push(todo);
-
-    fs.writeFile(path_list_todos_file, JSON.stringify(file_todos, null, 2), 'utf-8', function(err) {
-        if (err) throw err;
-        return res.json(file_todos);
-    })
+        file_todos.todos.push(todo);
+        fs.writeFile(path_list_todos_file, JSON.stringify(file_todos, null, 2), 'utf-8', function(err) {
+            if (err) throw err;
+            return res.json(file_todos);
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(error.status).send({ message: error.message });
+    }
 })
 
 //update a specific item
-router.put('/todo/:index', (req, res) => {
-    const { index } = req.params;
-    const { item } = req.body;
+router.put('/todo/:id?', (req, res) => {
+    try {
+        const { id } = req.params;
+        const { item } = req.body;
+        if (!id) {
+            throw new ThrowErrorCustom({
+                message: "You must pass an id",
+                status: 404,
+            });
+        }
+        if (!item) {
+            throw new ThrowErrorCustom({
+                message: "You must pass the item description",
+                status: 400,
+            });
+        }
 
-    let target = findId(file_todos.todos, index);
-    if (target != -1) {
-        file_todos.todos[target].item = item;
+        let target = findId(file_todos.todos, id);
+        if (target == -1) {
+            throw new ThrowErrorCustom({
+                message: "There is no item with this id",
+                status: 400,
+            });
+        } else {
+            file_todos.todos[target].item = item;
+        }
+        return res.json(file_todos);
+    } catch (error) {
+        console.log(error)
+        return res.status(error.status).send({ message: error.message });
     }
-
-    return res.json(file_todos);
 })
 
 //delete a specific item
-router.delete('/todo/:index', (req, res) => {
-    const { index } = req.params;
+router.delete('/todo/:id?', (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            throw new ThrowErrorCustom({
+                message: "You must pass an id",
+                status: 404,
+            });
+        }
 
-    let target = findId(file_todos.todos, index);
-    if (target != -1) {
-        file_todos.todos.splice(target, 1);
+        let target = findId(file_todos.todos, id);
+        if (target == -1) {
+            throw new ThrowErrorCustom({
+                message: "There is no item with this id",
+                status: 400,
+            });
+        } else {
+            file_todos.todos.splice(target, 1);
+        }
+        return res.json(file_todos);
+    } catch (error) {
+        console.log(error)
+        return res.status(error.status).send({ message: error.message });
     }
-
-    return res.json(file_todos);
 })
 
 module.exports = router;
