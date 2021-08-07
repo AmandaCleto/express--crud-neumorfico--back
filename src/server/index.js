@@ -4,9 +4,14 @@ const express = require('express');
 const http = require('http');
 const process = require('process');
 const routes = require('../routes/router');
+const cors = require('cors');
 
 const app = express();
 const server = http.createServer(app);
+
+app.use(cors({
+    origin: '*'
+}));
 
 app.use(express.json());
 app.use(routes);
