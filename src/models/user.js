@@ -20,7 +20,7 @@ User.init({
   email: {
     type: DataTypes.STRING,
     unique: {
-      msg: 'O email já está cadastrado'
+      msg: 'Email is already registered',
     },
   },
   password: DataTypes.CHAR(60),

@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const { ThrowErrorCustom } = require('../utils/errors');
 
 async function create(req, res) {
     try {
@@ -28,12 +29,22 @@ async function create(req, res) {
             email: emailReceived,
             password: passwordReceived
         })
-        console.log(doesUserCreated)
+
         return res.json({doesUserCreated});
 
-    } catch (error) {
-        console.log(error)
-        return res.status(error.status).send({ message: error.message });
+    } catch (errors) {
+
+        if (errors.type == 'ThrowErrorCustom') {
+            console.log(`ERROR:`)
+            console.log(`Message:, ${errors.message}`)
+            console.log(`Status:, ${errors.status}`)
+            return res.status(errors.status).send({ message: errors.message });
+        } else {
+            console.log(`ERROR:`)
+            console.log(`Message: ${errors.errors[0].message}`)
+            console.log(`Status: 404`)
+            return res.status(404).send({ message: errors.errors[0].message });
+        }
     }
 }
 
