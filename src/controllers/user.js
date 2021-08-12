@@ -36,8 +36,8 @@ async function create(req, res) {
 
         if (errors.type == 'ThrowErrorCustom') {
             console.log(`ERROR:`)
-            console.log(`Message:, ${errors.message}`)
-            console.log(`Status:, ${errors.status}`)
+            console.log(`Message: ${errors.message}`)
+            console.log(`Status: ${errors.status}`)
             return res.status(errors.status).send({ message: errors.message });
         } else {
             console.log(`ERROR:`)
