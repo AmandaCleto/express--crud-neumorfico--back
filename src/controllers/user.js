@@ -33,7 +33,35 @@ async function create(req, res) {
         return res.json({doesUserCreated});
 
     } catch (errors) {
+        if (errors.type == 'ThrowErrorCustom') {
+            console.log(`ERROR:`)
+            console.log(`Message: ${errors.message}`)
+            console.log(`Status: ${errors.status}`)
+            return res.status(errors.status).send({ message: errors.message });
+        } else {
+            console.log(`ERROR:`)
+            console.log(`Message: ${errors.errors[0].message}`)
+            console.log(`Status: 404`)
+            return res.status(404).send({ message: errors.errors[0].message });
+        }
+    }
+}
 
+async function get(req, res) {
+    try {
+        const { id_user: userIdReceived } = req.body;
+
+        const getUser = await User.findByPk(userIdReceived);
+
+        if (getUser == null) {
+            throw new ThrowErrorCustom({
+                message: "User doesn't exist",
+                status: 404,
+            });
+        }
+
+        return res.json({getUser});
+    } catch (errors) {
         if (errors.type == 'ThrowErrorCustom') {
             console.log(`ERROR:`)
             console.log(`Message: ${errors.message}`)
@@ -49,5 +77,6 @@ async function create(req, res) {
 }
 
 module.exports = {
-    create
+    create,
+    get
 }
