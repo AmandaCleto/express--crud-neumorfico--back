@@ -9,6 +9,7 @@ router.get('/user', userController.get);
 
 
 router.post('/todo', todoController.create);
+router.put('/todo', todoController.update);
 
 
 router.get('/teste', (req, res, next) => {
