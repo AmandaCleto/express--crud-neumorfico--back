@@ -11,6 +11,7 @@ router.get('/user', userController.read);
 router.post('/todo', todoController.create);
 router.get('/todo', todoController.read);
 router.put('/todo', todoController.update);
+router.delete('/todo', todoController.destroy);
 
 
 router.get('/teste', (req, res, next) => {

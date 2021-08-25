@@ -7,26 +7,19 @@ async function create(req, res) {
     try {
         const { id_user: userIdReceived, description: descriptionReceived } = req.body;
 
+        if (!descriptionReceived) {
+            throw new ThrowErrorCustom({
+                message: "Passing Todo's description is required",
+                status: 400,
+            });
+        }
+
         const getUser = await User.findByPk(userIdReceived);
 
         if (getUser == null) {
             throw new ThrowErrorCustom({
                 message: "User doesn't exist",
                 status: 404,
-            });
-        }
-
-        if (!descriptionReceived) {
-            throw new ThrowErrorCustom({
-                message: "You must pass the item description",
-                status: 400,
-            });
-        }
-
-        if (!userIdReceived) {
-            throw new ThrowErrorCustom({
-                message: "You must pass the user id",
-                status: 400,
             });
         }
 
@@ -55,6 +48,13 @@ async function read(req, res) {
     try {
         const { id_user: userIdReceived, id_todo: todoIdReceived } = req.body;
 
+        if (!todoIdReceived) {
+            throw new ThrowErrorCustom({
+                message: "Passing Todo's id is required",
+                status: 400,
+            });
+        }
+
         const getTodo = await Todo.findByPk(todoIdReceived);
 
         if (!getTodo) {
@@ -67,7 +67,7 @@ async function read(req, res) {
         if (getTodo.id_todo === todoIdReceived) {
             if (getTodo.id_user !== userIdReceived) {
                 throw new ThrowErrorCustom({
-                    message: "No match for this todo and user",
+                    message: "No match for this Todo and User",
                     status: 400,
                 });
             }
@@ -98,6 +98,20 @@ async function update(req, res) {
             description: descriptionReceived
         } = req.body;
 
+        if (!todoIdReceived) {
+            throw new ThrowErrorCustom({
+                message: "Passing Todo's id is required",
+                status: 400,
+            });
+        }
+
+        if (!descriptionReceived) {
+            throw new ThrowErrorCustom({
+                message: "Passing Todo's description is required",
+                status: 400,
+            });
+        }
+
         const getTodo = await Todo.findByPk(todoIdReceived);
 
         if (!getTodo) {
@@ -110,31 +124,10 @@ async function update(req, res) {
         if (getTodo.id_todo === todoIdReceived) {
             if (getTodo.id_user !== userIdReceived) {
                 throw new ThrowErrorCustom({
-                    message: "No match for this todo and user",
+                    message: "No match for this Todo and User",
                     status: 400,
                 });
             }
-        }
-
-        if (!descriptionReceived) {
-            throw new ThrowErrorCustom({
-                message: "You must pass the item description",
-                status: 400,
-            });
-        }
-
-        if (!todoIdReceived) {
-            throw new ThrowErrorCustom({
-                message: "You must pass the todo id",
-                status: 400,
-            });
-        }
-
-        if (!userIdReceived) {
-            throw new ThrowErrorCustom({
-                message: "You must pass the user id",
-                status: 400,
-            });
         }
 
         const doesTodoUpdated = await Todo.update({
@@ -148,7 +141,64 @@ async function update(req, res) {
             }
         )
 
-        return res.send({message: "Todo atualizado com sucesso"}).json({doesTodoUpdated})
+        return res.send({message: "Todo has been updated successfully"}).json({doesTodoUpdated})
+    } catch (errors) {
+        if (errors.type == 'ThrowErrorCustom') {
+            console.log(`ERROR:`)
+            console.log(`Message: ${errors.message}`)
+            console.log(`Status: ${errors.status}`)
+            return res.status(errors.status).send({ message: errors.message });
+        } else {
+            console.log(`ERROR:`)
+            console.log(`Message: ${errors.errors[0].message}`)
+            console.log(`Status: 404`)
+            return res.status(404).send({ message: errors.errors[0].message });
+        }
+    }
+}
+
+async function destroy(req, res) {
+    try {
+        const {
+            id_user: userIdReceived,
+            id_todo: todoIdReceived,
+         } = req.body;
+
+        if (!todoIdReceived) {
+            throw new ThrowErrorCustom({
+                message: "Passing Todo's id is required",
+                status: 400,
+            });
+        }
+
+        const getTodo = await Todo.findByPk(todoIdReceived);
+
+        if (!getTodo) {
+            throw new ThrowErrorCustom({
+                message: "Todo doesn't exist",
+                status: 400,
+            });
+        }
+
+        if (getTodo.id_todo === todoIdReceived) {
+            if (getTodo.id_user !== userIdReceived) {
+                throw new ThrowErrorCustom({
+                    message: "No match for this Todo and User",
+                    status: 400,
+                });
+            }
+        }
+
+        const doesTodoDestroyed = await Todo.destroy(
+            {
+                where: {
+                    id_user: userIdReceived,
+                    id_todo: todoIdReceived
+                }
+            }
+        )
+
+        return res.json({doesTodoDestroyed})
     } catch (errors) {
         if (errors.type == 'ThrowErrorCustom') {
             console.log(`ERROR:`)
@@ -167,5 +217,6 @@ async function update(req, res) {
 module.exports = {
     create,
     read,
-    update
+    update,
+    destroy
 }
