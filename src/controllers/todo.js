@@ -51,6 +51,45 @@ async function create(req, res) {
     }
 }
 
+async function read(req, res) {
+    try {
+        const { id_user: userIdReceived, id_todo: todoIdReceived } = req.body;
+
+        const getTodo = await Todo.findByPk(todoIdReceived);
+
+        if (!getTodo) {
+            throw new ThrowErrorCustom({
+                message: "Todo doesn't exist",
+                status: 400,
+            });
+        }
+
+        if (getTodo.id_todo === todoIdReceived) {
+            if (getTodo.id_user !== userIdReceived) {
+                throw new ThrowErrorCustom({
+                    message: "No match for this todo and user",
+                    status: 400,
+                });
+            }
+        }
+
+        return res.json({getTodo});
+
+    } catch (errors) {
+        if (errors.type == 'ThrowErrorCustom') {
+            console.log(`ERROR:`)
+            console.log(`Message: ${errors.message}`)
+            console.log(`Status: ${errors.status}`)
+            return res.status(errors.status).send({ message: errors.message });
+        } else {
+            console.log(`ERROR:`)
+            console.log(`Message: ${errors.errors[0].message}`)
+            console.log(`Status: 404`)
+            return res.status(404).send({ message: errors.errors[0].message });
+        }
+    }
+}
+
 async function update(req, res) {
     try {
         const {
@@ -71,7 +110,7 @@ async function update(req, res) {
         if (getTodo.id_todo === todoIdReceived) {
             if (getTodo.id_user !== userIdReceived) {
                 throw new ThrowErrorCustom({
-                    message: "User doesn't exist",
+                    message: "No match for this todo and user",
                     status: 400,
                 });
             }
@@ -127,5 +166,6 @@ async function update(req, res) {
 
 module.exports = {
     create,
+    read,
     update
 }

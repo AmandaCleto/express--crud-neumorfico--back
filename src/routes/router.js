@@ -5,10 +5,11 @@ const todoController = require('../controllers/todo');
 const userController = require('../controllers/user');
 
 router.post('/user', userController.create);
-router.get('/user', userController.get);
+router.get('/user', userController.read);
 
 
 router.post('/todo', todoController.create);
+router.get('/todo', todoController.read);
 router.put('/todo', todoController.update);
 
 

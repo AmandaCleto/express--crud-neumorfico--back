@@ -47,7 +47,7 @@ async function create(req, res) {
     }
 }
 
-async function get(req, res) {
+async function read(req, res) {
     try {
         const { id_user: userIdReceived } = req.body;
 
@@ -78,5 +78,5 @@ async function get(req, res) {
 
 module.exports = {
     create,
-    get
+    read
 }
