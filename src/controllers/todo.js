@@ -198,7 +198,8 @@ async function destroy(req, res) {
             }
         )
 
-        return res.json({doesTodoDestroyed})
+
+        return res.send({message: "Todo has been deleted successfully"}).json({doesTodoDestroyed})
     } catch (errors) {
         if (errors.type == 'ThrowErrorCustom') {
             console.log(`ERROR:`)

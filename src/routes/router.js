@@ -6,13 +6,13 @@ const userController = require('../controllers/user');
 
 router.post('/user', userController.create);
 router.get('/user', userController.read);
-
+router.put('/user', userController.update);
+router.delete('/user', userController.destroy);
 
 router.post('/todo', todoController.create);
 router.get('/todo', todoController.read);
 router.put('/todo', todoController.update);
 router.delete('/todo', todoController.destroy);
-
 
 router.get('/teste', (req, res, next) => {
     res.status(200).send({
