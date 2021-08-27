@@ -46,7 +46,7 @@ async function authenticate(req, res) {
         }
 
         const tokenJwt = jwt.sign(
-            { userId: doesUserExist.id }, // payload = data
+            { id_user: doesUserExist.id_user }, // payload = data
             process.env.JWT_SECRET, // secret key
             { algorithm: 'HS256', expiresIn: '12h' } // configs with iat
         );

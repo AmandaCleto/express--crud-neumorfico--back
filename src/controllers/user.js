@@ -50,16 +50,9 @@ async function create(req, res) {
 
 async function read(req, res) {
     try {
-        const { id_user: userIdReceived } = req.body;
+        const { id_user: userIdReceived } = req;
 
         const getUser = await User.findByPk(userIdReceived);
-
-        if (!getUser) {
-            throw new ThrowErrorCustom({
-                message: "User doesn't exist",
-                status: 404,
-            });
-        }
 
         return res.json({getUser});
     } catch (errors) {
@@ -79,8 +72,8 @@ async function read(req, res) {
 
 async function update(req, res) {
     try {
+        const { id_user: userIdReceived } = req;
         const {
-            id_user: userIdReceived,
             name: nameReceived,
             email: emailReceived,
             password: passwordReceived
@@ -127,7 +120,7 @@ async function destroy(req, res) {
     try {
         const {
             id_user: userIdReceived,
-         } = req.body;
+         } = req;
 
         const getUser = await User.findByPk(userIdReceived);
 

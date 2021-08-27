@@ -5,12 +5,14 @@ const todoController = require('../controllers/todo');
 const userController = require('../controllers/user');
 const authenticateController = require('../controllers/authenticate');
 
+const { authenticationMiddleware } = require('../middlewares/authentication');
+
 router.post('/login', authenticateController.authenticate);
 
 router.post('/user', userController.create);
-router.get('/user', userController.read);
-router.put('/user', userController.update);
-router.delete('/user', userController.destroy);
+router.get('/user', [authenticationMiddleware], userController.read);
+router.put('/user', [authenticationMiddleware], userController.update);
+router.delete('/user', [authenticationMiddleware], userController.destroy);
 
 router.post('/todo', todoController.create);
 router.get('/todo', todoController.read);
