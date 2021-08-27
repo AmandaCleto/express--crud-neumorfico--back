@@ -3,6 +3,9 @@ const router = Router();
 
 const todoController = require('../controllers/todo');
 const userController = require('../controllers/user');
+const authenticateController = require('../controllers/authenticate');
+
+router.post('/login', authenticateController.authenticate);
 
 router.post('/user', userController.create);
 router.get('/user', userController.read);

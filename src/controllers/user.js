@@ -11,12 +11,14 @@ async function create(req, res) {
                 status: 400,
             });
         }
+
         if (!emailReceived) {
             throw new ThrowErrorCustom({
                 message: "Passing Email's value is required",
                 status: 400,
             });
         }
+
         if (!passwordReceived) {
             throw new ThrowErrorCustom({
                 message: "Passing Password's value is required",
@@ -52,7 +54,7 @@ async function read(req, res) {
 
         const getUser = await User.findByPk(userIdReceived);
 
-        if (getUser == null) {
+        if (!getUser) {
             throw new ThrowErrorCustom({
                 message: "User doesn't exist",
                 status: 404,

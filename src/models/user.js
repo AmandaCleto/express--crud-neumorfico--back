@@ -3,6 +3,7 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../database/connection');
 
+const bcrypt = require('bcryptjs');
 class User extends Model {
   static associate(models) {
     // define association here
@@ -16,11 +17,22 @@ User.init({
   },
   name: {
     type: DataTypes.STRING,
+    validate: {
+      is: {
+        args: [/^([\w]{2,})+\s+([\w\s]{2,})+$/i],
+        msg: 'You must inform the name and last name'
+      }
+    }
   },
   email: {
     type: DataTypes.STRING,
+    validate: {
+      isEmail: {
+        msg: 'Email passed is invalid'
+      }
+    },
     unique: {
-      msg: 'Email is already registered',
+      msg: 'This email is already registered',
     },
   },
   password: DataTypes.CHAR(60),
@@ -38,7 +50,9 @@ User.init({
     }
   },
   hooks: {
-
+    afterValidate: (User) => {
+      User.password = bcrypt.hashSync(User.password, 10);
+    }
   },
   sequelize,
   modelName: 'Users',
