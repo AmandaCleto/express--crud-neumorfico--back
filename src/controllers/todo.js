@@ -5,21 +5,13 @@ const { ThrowErrorCustom } = require('../utils/errors');
 
 async function create(req, res) {
     try {
-        const { id_user: userIdReceived, description: descriptionReceived } = req.body;
+        const { id_user: userIdReceived } = req;
+        const { description: descriptionReceived } = req.body;
 
         if (!descriptionReceived) {
             throw new ThrowErrorCustom({
                 message: "Passing Todo's description is required",
                 status: 400,
-            });
-        }
-
-        const getUser = await User.findByPk(userIdReceived);
-
-        if (getUser == null) {
-            throw new ThrowErrorCustom({
-                message: "User doesn't exist",
-                status: 404,
             });
         }
 
@@ -46,34 +38,22 @@ async function create(req, res) {
 
 async function read(req, res) {
     try {
-        const { id_user: userIdReceived, id_todo: todoIdReceived } = req.body;
+        const { id_user: userIdReceived } = req;
 
-        if (!todoIdReceived) {
-            throw new ThrowErrorCustom({
-                message: "Passing Todo's id is required",
-                status: 400,
-            });
-        }
-
-        const getTodo = await Todo.findByPk(todoIdReceived);
-
-        if (!getTodo) {
-            throw new ThrowErrorCustom({
-                message: "Todo doesn't exist",
-                status: 400,
-            });
-        }
-
-        if (getTodo.id_todo === todoIdReceived) {
-            if (getTodo.id_user !== userIdReceived) {
-                throw new ThrowErrorCustom({
-                    message: "No match for this Todo and User",
-                    status: 400,
-                });
+        const doesTodosFound = await Todo.findAll({
+            where: {
+                id_user: userIdReceived,
             }
+        });
+
+        if (!doesTodosFound || doesTodosFound.length == 0) {
+            throw new ThrowErrorCustom({
+                message: "Any Todo were found",
+                status: 404,
+            });
         }
 
-        return res.json({getTodo});
+        return res.json({doesTodosFound});
 
     } catch (errors) {
         if (errors.type == 'ThrowErrorCustom') {
@@ -92,8 +72,8 @@ async function read(req, res) {
 
 async function update(req, res) {
     try {
+        const { id_user: userIdReceived } = req;
         const {
-            id_user: userIdReceived,
             id_todo: todoIdReceived,
             description: descriptionReceived
         } = req.body;
@@ -119,15 +99,6 @@ async function update(req, res) {
                 message: "Todo doesn't exist",
                 status: 400,
             });
-        }
-
-        if (getTodo.id_todo === todoIdReceived) {
-            if (getTodo.id_user !== userIdReceived) {
-                throw new ThrowErrorCustom({
-                    message: "No match for this Todo and User",
-                    status: 400,
-                });
-            }
         }
 
         const doesTodoUpdated = await Todo.update({
@@ -159,17 +130,8 @@ async function update(req, res) {
 
 async function destroy(req, res) {
     try {
-        const {
-            id_user: userIdReceived,
-            id_todo: todoIdReceived,
-         } = req.body;
-
-        if (!todoIdReceived) {
-            throw new ThrowErrorCustom({
-                message: "Passing Todo's id is required",
-                status: 400,
-            });
-        }
+        const { id_user: userIdReceived } = req;
+        const { id_todo: todoIdReceived } = req.body;
 
         const getTodo = await Todo.findByPk(todoIdReceived);
 
@@ -180,15 +142,6 @@ async function destroy(req, res) {
             });
         }
 
-        if (getTodo.id_todo === todoIdReceived) {
-            if (getTodo.id_user !== userIdReceived) {
-                throw new ThrowErrorCustom({
-                    message: "No match for this Todo and User",
-                    status: 400,
-                });
-            }
-        }
-
         const doesTodoDestroyed = await Todo.destroy(
             {
                 where: {
@@ -197,7 +150,6 @@ async function destroy(req, res) {
                 }
             }
         )
-
 
         return res.send({message: "Todo has been deleted successfully"}).json({doesTodoDestroyed})
     } catch (errors) {
