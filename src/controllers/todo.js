@@ -1,5 +1,6 @@
 const Todo = require('../models/todo');
 const User = require('../models/user');
+const { getErrors } = require('../utils/index');
 
 const { ThrowErrorCustom } = require('../utils/errors');
 
@@ -22,17 +23,7 @@ async function create(req, res) {
 
         return res.json({doesTodoCreated});
     } catch (errors) {
-        if (errors.type == 'ThrowErrorCustom') {
-            console.log(`ERROR:`)
-            console.log(`Message: ${errors.message}`)
-            console.log(`Status: ${errors.status}`)
-            return res.status(errors.status).send({ message: errors.message });
-        } else {
-            console.log(`ERROR:`)
-            console.log(`Message: ${errors.errors[0].message}`)
-            console.log(`Status: 404`)
-            return res.status(404).send({ message: errors.errors[0].message });
-        }
+        getErrors(res, errors);
     }
 }
 
@@ -56,17 +47,7 @@ async function read(req, res) {
         return res.json({doesTodosFound});
 
     } catch (errors) {
-        if (errors.type == 'ThrowErrorCustom') {
-            console.log(`ERROR:`)
-            console.log(`Message: ${errors.message}`)
-            console.log(`Status: ${errors.status}`)
-            return res.status(errors.status).send({ message: errors.message });
-        } else {
-            console.log(`ERROR:`)
-            console.log(`Message: ${errors.errors[0].message}`)
-            console.log(`Status: 404`)
-            return res.status(404).send({ message: errors.errors[0].message });
-        }
+        getErrors(res, errors);
     }
 }
 
@@ -114,17 +95,7 @@ async function update(req, res) {
 
         return res.send({message: "Todo has been updated successfully"}).json({doesTodoUpdated})
     } catch (errors) {
-        if (errors.type == 'ThrowErrorCustom') {
-            console.log(`ERROR:`)
-            console.log(`Message: ${errors.message}`)
-            console.log(`Status: ${errors.status}`)
-            return res.status(errors.status).send({ message: errors.message });
-        } else {
-            console.log(`ERROR:`)
-            console.log(`Message: ${errors.errors[0].message}`)
-            console.log(`Status: 404`)
-            return res.status(404).send({ message: errors.errors[0].message });
-        }
+        getErrors(res, errors);
     }
 }
 
@@ -153,17 +124,7 @@ async function destroy(req, res) {
 
         return res.send({message: "Todo has been deleted successfully"}).json({doesTodoDestroyed})
     } catch (errors) {
-        if (errors.type == 'ThrowErrorCustom') {
-            console.log(`ERROR:`)
-            console.log(`Message: ${errors.message}`)
-            console.log(`Status: ${errors.status}`)
-            return res.status(errors.status).send({ message: errors.message });
-        } else {
-            console.log(`ERROR:`)
-            console.log(`Message: ${errors.errors[0].message}`)
-            console.log(`Status: 404`)
-            return res.status(404).send({ message: errors.errors[0].message });
-        }
+        getErrors(res, errors);
     }
 }
 

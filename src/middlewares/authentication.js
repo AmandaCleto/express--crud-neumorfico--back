@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const process = require('process');
+const { getErrors } = require('../utils/index');
 
 function authenticationMiddleware(req, res, next) {
     try {
@@ -30,17 +31,7 @@ function authenticationMiddleware(req, res, next) {
 
         return next();
     }  catch (errors) {
-        if (errors.type == 'ThrowErrorCustom') {
-            console.log(`ERROR:`)
-            console.log(`Message: ${errors.message}`)
-            console.log(`Status: ${errors.status}`)
-            return res.status(errors.status).send({ message: errors.message });
-        } else {
-            console.log(`ERROR:`)
-            console.log(`Message: ${errors.errors[0].message}`)
-            console.log(`Status: 404`)
-            return res.status(404).send({ message: errors.errors[0].message });
-        }
+        getErrors(res, errors);
     }
 }
 

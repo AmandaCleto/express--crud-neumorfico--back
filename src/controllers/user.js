@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const { ThrowErrorCustom } = require('../utils/errors');
+const { getErrors } = require('../utils/index');
 
 async function create(req, res) {
     try {
@@ -34,17 +35,7 @@ async function create(req, res) {
 
         return res.json({doesUserCreated});
     } catch (errors) {
-        if (errors.type == 'ThrowErrorCustom') {
-            console.log(`ERROR:`)
-            console.log(`Message: ${errors.message}`)
-            console.log(`Status: ${errors.status}`)
-            return res.status(errors.status).send({ message: errors.message });
-        } else {
-            console.log(`ERROR:`)
-            console.log(`Message: ${errors.errors[0].message}`)
-            console.log(`Status: 404`)
-            return res.status(404).send({ message: errors.errors[0].message });
-        }
+        getErrors(res, errors);
     }
 }
 
@@ -56,17 +47,7 @@ async function read(req, res) {
 
         return res.json({getUser});
     } catch (errors) {
-        if (errors.type == 'ThrowErrorCustom') {
-            console.log(`ERROR:`)
-            console.log(`Message: ${errors.message}`)
-            console.log(`Status: ${errors.status}`)
-            return res.status(errors.status).send({ message: errors.message });
-        } else {
-            console.log(`ERROR:`)
-            console.log(`Message: ${errors.errors[0].message}`)
-            console.log(`Status: 404`)
-            return res.status(404).send({ message: errors.errors[0].message });
-        }
+        getErrors(res, errors);
     }
 }
 
@@ -88,6 +69,13 @@ async function update(req, res) {
             });
         }
 
+        if (nameReceived == undefined && emailReceived == undefined && passwordReceived == undefined) {
+            throw new ThrowErrorCustom({
+                message: "Nothing to update",
+                status: 400,
+            });
+        }
+
         const doesUserUpdated = await User.update({
                 name: nameReceived,
                 email: emailReceived,
@@ -102,17 +90,7 @@ async function update(req, res) {
 
         return res.send({message: "User has been updated successfully"}).json({doesUserUpdated})
     } catch (errors) {
-        if (errors.type == 'ThrowErrorCustom') {
-            console.log(`ERROR:`)
-            console.log(`Message: ${errors.message}`)
-            console.log(`Status: ${errors.status}`)
-            return res.status(errors.status).send({ message: errors.message });
-        } else {
-            console.log(`ERROR:`)
-            console.log(`Message: ${errors.errors[0].message}`)
-            console.log(`Status: 404`)
-            return res.status(404).send({ message: errors.errors[0].message });
-        }
+        getErrors(res, errors);
     }
 }
 
@@ -141,17 +119,7 @@ async function destroy(req, res) {
 
         return res.send({message: "User has been deleted successfully"}).json({doesUserDestroyed})
     } catch (errors) {
-        if (errors.type == 'ThrowErrorCustom') {
-            console.log(`ERROR:`)
-            console.log(`Message: ${errors.message}`)
-            console.log(`Status: ${errors.status}`)
-            return res.status(errors.status).send({ message: errors.message });
-        } else {
-            console.log(`ERROR:`)
-            console.log(`Message: ${errors.errors[0].message}`)
-            console.log(`Status: 404`)
-            return res.status(404).send({ message: errors.errors[0].message });
-        }
+        getErrors(res, errors);
     }
 }
 
