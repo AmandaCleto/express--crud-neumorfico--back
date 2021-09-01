@@ -12,8 +12,10 @@ Aprender mais sobre **NodeJs** e **ExpressJs**, esse projeto é uma estrutura ba
 * Utilização do ORM (_Object Relational Mapper_) **Sequelize**;
 * Padrão de projeto MVC (_Model-View-Controller_) junto ao framework **ExpressJs**.
 
----
+<br>
 
-## Pré Requisitos:
-* 🎯 NodeJS v14.16 </br>
-[<u>Guia de Instalação do NodeJS</u>](https://nodejs.org/en/download/)
+***
+
+### Pré Requisitos:
+* 🎯 **NodeJS v14.16** </br>
+[<ins>Guia de Instalação do NodeJS</ins>](https://nodejs.org/en/download/)
