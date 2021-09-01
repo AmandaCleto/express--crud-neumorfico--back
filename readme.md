@@ -8,7 +8,7 @@
 ## 💡 Ideia:
 Aprender mais sobre **NodeJs** e **ExpressJs**, esse projeto é uma estrutura back-end básica com autentificação de login para usuário com um painel de todo-list.
 
-## Aprendizado:
+## 📚 Aprendizado:
 * Utilização do ORM (_Object Relational Mapper_) **Sequelize**;
 * Padrão de projeto MVC (_Model-View-Controller_) junto ao framework **ExpressJs**.
 
