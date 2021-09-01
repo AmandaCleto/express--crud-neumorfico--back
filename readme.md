@@ -14,7 +14,6 @@ Aprender mais sobre **NodeJs** e **ExpressJs**, esse projeto é uma estrutura ba
 
 <br>
 
-***
 
 ### Pré Requisitos:
 * 🎯 **NodeJS v14.16** </br>
